@@ -36,11 +36,33 @@ public class AES{
     return state;
   }
 
-  private static byte[][] shiftRows(byte[][] state){
+  private static int[] shiftRows(int[] state){
     // Let Ri denote the ith row in state. Shift R0 in the state left 0 bytes (i.e., no
     // change); shift R1 left 1 byte; shift R2 left 2 bytes; shift R3 left 3 bytes. These are circular
     // shifts. They do not affect the individual byte values themselves.
-    return null;
+    int[] temp = new int[16];
+
+    temp[0] = state[0];
+    temp[1] = state[5];
+    temp[2] = state[10];
+    temp[3] = state[15];
+
+    temp[4] = state[4];
+    temp[5] = state[9];
+    temp[6] = state[14];
+    temp[7] = state[3];
+
+    temp[8] = state[8];
+    temp[9] = state[13];
+    temp[10] = state[2];
+    temp[11] = state[7];
+
+    temp[12] = state[12];
+    temp[13] = state[1];
+    temp[14] = state[6];
+    temp[15] = state[11];
+
+    return temp;
   }
 
   private static byte[][] mixColumns(byte[][] state){
@@ -60,23 +82,48 @@ public class AES{
 
 
   public static void main(String[] args){
-    for(int i = 0; i < 256; i++){
-      System.out.println(" " + sbox[i]);
+    
+    /* uncomment this once using file i/o
+    if (args.length < 3) {
+      System.out.println("Incorrect number of arguements supplied!");
+      System.exit(0);
     }
 
+    String option, keyfile, inputfile;
+    option = args[0];
+    keyfile = args[1];
+    inputfile = args[2];
+
+    System.out.println("Running AES with the following parameters:");
+    System.out.println("option: " + option);
+    System.out.println("keyfile: " + keyfile);
+    System.out.println("inputfile: " + inputfile);
+    System.out.println("");
+    */
+
+    //for testing the individual methods
     int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b, 
                         0x78, 0xa9, 0x7e, 0xff, 0x0b, 0xfc, 0x7e, 0xa2};
     
     System.out.println("Printing the testbyte array");
     for(int i = 0; i < 16; i++){
-      System.out.println(" " + testbytes[i]);
+      System.out.println(testbytes[i] + " ");
     }
+    System.out.println("");
 
     System.out.println("Calling subBytes");
     int[] state = subBytes(testbytes);
     for(int i = 0; i < 16; i++){
-      System.out.println(" " + state[i]);
+      System.out.println(state[i] + " ");
     }
+    System.out.println("");
+
+    System.out.println("Calling shiftRows");
+    state = shiftRows(state);
+    for(int i = 0; i < 16; i++){
+      System.out.println(state[i] + " ");
+    }
+    System.out.println("");
 
   }
 }

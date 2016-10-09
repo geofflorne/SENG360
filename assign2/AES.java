@@ -64,13 +64,13 @@ public class AES{
     // for each byte in the array, use its value as an index into a fixed 256-element
     // lookup table, and replace its value in the state by the byte value stored at that location in
     // the table. You can find the table and the inverse table on the web.
-    for(int i = 0; i < 16; j++){
+    for(int i = 0; i < 16; i++){
       state[i] = sbox[state[i]];
     }
     return state;
   }
 
-  private static void shiftRows(int[] state){
+  private static int[] shiftRows(int[] state){
     // Let Ri denote the ith row in state. Shift R0 in the state left 0 bytes (i.e., no
     // change); shift R1 left 1 byte; shift R2 left 2 bytes; shift R3 left 3 bytes. These are circular
     // shifts. They do not affect the individual byte values themselves.
@@ -108,18 +108,19 @@ public class AES{
     return null;
   }
 
-  private static byte[][] addRoundKey(int[] state, int[] key){
+  private static int[] addRoundKey(int[] state, int[] key){
     // XOR the state with a 128-bit round key derived from the original key K by
     // a recursive process.
     for(int i = 0; i < 16; i++){
-      state[i] ^= key[i]
+      state[i] ^= key[i];
     }
     return state;
   }
 
-  private static int[] encrypt(key, message){
+  /*
+  private static int[] encrypt(int[] key, int[] message){
 
-    int state[16];
+    int[] state = new int[16];
     for(int i = 0; i < 16; i++){
       state[i] = message[i];
     }
@@ -127,9 +128,9 @@ public class AES{
     keyExpansion();
     addRoundKey(state, key);
 
-    for(int i  = 0; i < numRounds; i++){
+    for(int i  = 0; i < 14; i++){
       subBytes(state);
-      shiftRows(state);
+      shiftRows(state, key);
       mixColumns();
       addRoundKey(state, key);
     }
@@ -138,6 +139,7 @@ public class AES{
     shiftRows(state);
     addRoundKey(state);
   }
+  */
 
   public static void main(String[] args){
 
@@ -163,6 +165,11 @@ public class AES{
     int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b,
                         0x78, 0xa9, 0x7e, 0xff, 0x0b, 0xfc, 0x7e, 0xa2};
 
+    int[] testkey = {0x2b, 0x29, 0x84, 0x38, 0xae, 0xae, 0x95, 0x2c, 0xbc,
+                      0x81, 0xc1, 0x7f, 0x50, 0x7d, 0xc7, 0x29, 0x97, 0x82,
+                      0x7e, 0x32, 0x44, 0x6b, 0x65, 0x67, 0x7a, 0xf7, 0xb4,
+                      0x30, 0xfb, 0x4e, 0x2d, 0xae};
+
     System.out.println("Printing the testbyte array");
     for(int i = 0; i < 16; i++){
       System.out.println(testbytes[i] + " ");
@@ -182,6 +189,12 @@ public class AES{
       System.out.println(state[i] + " ");
     }
     System.out.println("");
+
+    System.out.println("Calling addRoundKey");
+    state = addRoundKey(state, testkey);
+    for(int i = 0; i < 16; i++){
+      System.out.println(state[i] + " ");
+    }
 
   }
 }

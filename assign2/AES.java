@@ -1,6 +1,6 @@
 public class AES{
 
-  public static int[] sbox = 
+  public static int[] sbox =
   {
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
     0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0,
@@ -20,23 +20,17 @@ public class AES{
     0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16
   };
 
-  private static int[] subBytes(int[] in){
+  private static int[] subBytes(int[] state){
     // for each byte in the array, use its value as an index into a fixed 256-element
     // lookup table, and replace its value in the state by the byte value stored at that location in
     // the table. You can find the table and the inverse table on the web.
-    int[] state = new int[16];
-    for(int i = 0; i < 16; i++){
-      state[i] = in[i];
+    for(int i = 0; i < 16; j++){
+      state[i] = sbox[state[i]];
     }
-
-    for(int j = 0; j < 16; j++){
-      state[j] = sbox[state[j]];
-    }
-
     return state;
   }
 
-  private static int[] shiftRows(int[] state){
+  private static void shiftRows(int[] state){
     // Let Ri denote the ith row in state. Shift R0 in the state left 0 bytes (i.e., no
     // change); shift R1 left 1 byte; shift R2 left 2 bytes; shift R3 left 3 bytes. These are circular
     // shifts. They do not affect the individual byte values themselves.
@@ -74,15 +68,39 @@ public class AES{
     return null;
   }
 
-  private static byte[][] addRoundKey(byte[][] state, byte[][] key){
+  private static byte[][] addRoundKey(int[] state, int[] key){
     // XOR the state with a 128-bit round key derived from the original key K by
     // a recursive process.
-    return null;
+    for(int i = 0; i < 16; i++){
+      state[i] ^= key[i]
+    }
+    return state;
   }
 
+  private static int[] encrypt(key, message){
+
+    int state[16];
+    for(int i = 0; i < 16; i++){
+      state[i] = message[i];
+    }
+
+    keyExpansion();
+    addRoundKey(state, key);
+
+    for(int i  = 0; i < numRounds; i++){
+      subBytes(state);
+      shiftRows(state);
+      mixColumns();
+      addRoundKey(state, key);
+    }
+
+    subBytes(state);
+    shiftRows(state);
+    addRoundKey(state);
+  }
 
   public static void main(String[] args){
-    
+
     /* uncomment this once using file i/o
     if (args.length < 3) {
       System.out.println("Incorrect number of arguements supplied!");
@@ -102,9 +120,9 @@ public class AES{
     */
 
     //for testing the individual methods
-    int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b, 
+    int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b,
                         0x78, 0xa9, 0x7e, 0xff, 0x0b, 0xfc, 0x7e, 0xa2};
-    
+
     System.out.println("Printing the testbyte array");
     for(int i = 0; i < 16; i++){
       System.out.println(testbytes[i] + " ");

@@ -108,11 +108,11 @@ public class AES{
     return null;
   }
 
-  private static int[] addRoundKey(int[] state, int[] key){
+  private static int[] addRoundKey(int[] state, int[] roundKey){
     // XOR the state with a 128-bit round key derived from the original key K by
     // a recursive process.
     for(int i = 0; i < 16; i++){
-      state[i] ^= key[i];
+      state[i] ^= roundKey[i];
     }
     return state;
   }
@@ -170,6 +170,9 @@ public class AES{
                       0x7e, 0x32, 0x44, 0x6b, 0x65, 0x67, 0x7a, 0xf7, 0xb4,
                       0x30, 0xfb, 0x4e, 0x2d, 0xae};
 
+    int[] roundkey = {0x2b, 0x29, 0x84, 0x38, 0xae, 0xae, 0x95, 0x2c,
+                      0xbc, 0x81, 0xc1, 0x7f, 0x50, 0x7d, 0xc7, 0x29};
+
     System.out.println("Printing the testbyte array");
     for(int i = 0; i < 16; i++){
       System.out.println(testbytes[i] + " ");
@@ -191,7 +194,7 @@ public class AES{
     System.out.println("");
 
     System.out.println("Calling addRoundKey");
-    state = addRoundKey(state, testkey);
+    state = addRoundKey(state, roundkey);
     for(int i = 0; i < 16; i++){
       System.out.println(state[i] + " ");
     }

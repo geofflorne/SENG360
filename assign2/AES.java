@@ -20,7 +20,7 @@ public class AES{
     0x8C,0xA1,0x89,0x0D,0xBF,0xE6,0x42,0x68,0x41,0x99,0x2D,0x0F,0xB0,0x54,0xBB,0x16
   };
 
-  public static int[] galois2 =
+  public static int[] mul2 =
   {
     0x00,0x02,0x04,0x06,0x08,0x0a,0x0c,0x0e,0x10,0x12,0x14,0x16,0x18,0x1a,0x1c,0x1e,
     0x20,0x22,0x24,0x26,0x28,0x2a,0x2c,0x2e,0x30,0x32,0x34,0x36,0x38,0x3a,0x3c,0x3e,
@@ -40,7 +40,7 @@ public class AES{
     0xfb,0xf9,0xff,0xfd,0xf3,0xf1,0xf7,0xf5,0xeb,0xe9,0xef,0xed,0xe3,0xe1,0xe7,0xe5
   };
 
-  public static int[] galois3 =
+  public static int[] mul3 =
   {
     0x00,0x03,0x06,0x05,0x0c,0x0f,0x0a,0x09,0x18,0x1b,0x1e,0x1d,0x14,0x17,0x12,0x11,
     0x30,0x33,0x36,0x35,0x3c,0x3f,0x3a,0x39,0x28,0x2b,0x2e,0x2d,0x24,0x27,0x22,0x21,
@@ -99,13 +99,36 @@ public class AES{
     return temp;
   }
 
-  private static byte[][] mixColumns(byte[][] state){
+  private static int[] mixColumns(int[] state){
     // for each column of the state, replace the column by its value multiplied by
     // a fixed 4 x 4 matrix of integers (in a particular Galois Field). This is the most complex
     // step. The posted video lectures explain that step in detail. You can also find details at
     // many websites, e.g., Wikipedia. Note that the inverse operation multiplies by a different
     // matrix.
-    return null;
+
+    int[] tmp = new int[16];
+
+    tmp[0] = (mul2[state[0]] ^ mul3[state[1]] ^ state[2] ^ state[3]);
+    tmp[1] = (state[0] ^ mul2[state[1]] ^ mul3[state[2]] ^ state[3]);
+    tmp[2] = (state[0] ^ state[1] ^ mul2[state[2]] ^ mul3[state[3]]);
+    tmp[3] = (mul3[state[0]] ^ state[1] ^ state[2] ^ mul2[state[3]]);
+    
+    tmp[4] = (mul2[state[4]] ^ mul3[state[5]] ^ state[6] ^ state[7]);
+    tmp[5] = (state[4] ^ mul2[state[5]] ^ mul3[state[6]] ^ state[7]);
+    tmp[6] = (state[4] ^ state[5] ^ mul2[state[6]] ^ mul3[state[7]]);
+    tmp[7] = (mul3[state[4]] ^ state[5] ^ state[6] ^ mul2[state[7]]);
+
+    tmp[8] = (mul2[state[8]] ^ mul3[state[9]] ^ state[10] ^ state[11]);
+    tmp[9] = (state[8] ^ mul2[state[9]] ^ mul3[state[10]] ^ state[11]);
+    tmp[10] = (state[8] ^ state[9] ^ mul2[state[10]] ^ mul3[state[11]]);
+    tmp[11] = (mul3[state[8]] ^ state[9] ^ state[10] ^ mul2[state[11]]);
+
+    tmp[12] = (mul2[state[12]] ^ mul3[state[13]] ^ state[14] ^ state[15]);
+    tmp[13] = (state[12] ^ mul2[state[13]] ^ mul3[state[14]] ^ state[15]);
+    tmp[14] = (state[12] ^ state[13] ^ mul2[state[14]] ^ mul3[state[15]]);
+    tmp[15] = (mul3[state[12]] ^ state[13] ^ state[14] ^ mul2[state[15]]);
+
+    return tmp;
   }
 
   private static int[] addRoundKey(int[] state, int[] roundKey){
@@ -195,6 +218,12 @@ public class AES{
 
     System.out.println("Calling addRoundKey");
     state = addRoundKey(state, roundkey);
+    for(int i = 0; i < 16; i++){
+      System.out.println(state[i] + " ");
+    }
+
+    System.out.println("Calling mixColumns");
+    state = mixColumns(state);
     for(int i = 0; i < 16; i++){
       System.out.println(state[i] + " ");
     }

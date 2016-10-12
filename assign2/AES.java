@@ -160,21 +160,52 @@ public class AES{
     return state;
   }
 
-  private static int[] keyExpansionCore(int[] in) {
+  private static int[] keyExpansionCore(int[] in, int i) {
     //rotate left
+    int[] temp = new int[4];
+
     int t = in[0];
-    in[0] = in[1];
-    in[1] = in[2];
-    in[2] = in[3];
-    in[3] = t;
+    temp[0] = in[1];
+    temp[1] = in[2];
+    temp[2] = in[3];
+    temp[3] = t;
 
     //sbox
-    in[0] = sbox[in[0]];
-    in[1] = sbox[in[1]];
-    in[2] = sbox[in[2]];
-    in[3] = sbox[in[3]];
+    temp[0] = sbox[temp[0]];
+    temp[1] = sbox[temp[1]];
+    temp[2] = sbox[temp[2]];
+    temp[3] = sbox[temp[3]];
 
-    in[0] ^= rcon[i];
+    temp[0] ^= rcon[i];
+    return temp;
+  }
+
+  private static int[] keyExpansion(int[] inputKey) {
+    //expand the inputkey into a whole bunch of keys, return the expandedKeys array
+    int[] expandedKeys = new int[240];
+
+    for(int i = 0; i < 16; i++){
+      expandedKeys[i] = inputKey[i];
+    }
+
+    int bytesGenerated = 16;
+    int rconIteration = 1;
+    int[] temp = new int[4];
+
+    while(bytesGenerated < 240) {
+      for(int j = 0; j < 4; j++) {
+        temp[j] = expandedKeys[j + bytesGenerated - 4];
+      }
+      if(bytesGenerated % 16 == 0) {
+        temp = keyExpansionCore(temp, rconIteration);
+        rconIteration++;
+      }
+      for(int i = 0; i < 4; i++) {
+        expandedKeys[bytesGenerated] = expandedKeys[bytesGenerated - 16] ^ temp[i];
+        bytesGenerated++;
+      }
+    }
+    return expandedKeys;
   }
 
   /*
@@ -263,6 +294,12 @@ public class AES{
     state = mixColumns(state);
     for(int i = 0; i < 16; i++){
       System.out.println(state[i] + " ");
+    }
+
+    System.out.println("Calling keyExpansion");
+    int[] keys = keyExpansion(roundkey);
+    for(int i = 0; i < 176; i++) {
+      System.out.println(keys[i] + " ");
     }
 
   }

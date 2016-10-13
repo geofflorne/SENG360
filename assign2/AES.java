@@ -306,12 +306,6 @@ public class AES{
       System.out.println(Arrays.toString(bloc));
     }
 
-
-
-
-    System.out.println(Arrays.toString(key));
-
-
     //for testing the individual methods
     int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b,
                         0x78, 0xa9, 0x7e, 0xff, 0x0b, 0xfc, 0x7e, 0xa2};

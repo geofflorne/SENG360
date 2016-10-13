@@ -186,26 +186,34 @@ public class AES{
 
   private static int[] keyExpansion(int[] inputKey) {
     //expand the inputkey into a whole bunch of keys, return the expandedKeys array
-    int[] expandedKeys = new int[240];
+    int expandedKeyLength = 240;
+    int[] expandedKeys = new int[expandedKeyLength];
+    int bytesGenerated = 32;
 
-    for(int i = 0; i < 16; i++){
+    for(int i = 0; i < bytesGenerated; i++){
       expandedKeys[i] = inputKey[i];
     }
 
-    int bytesGenerated = 16;
     int rconIteration = 1;
     int[] temp = new int[4];
 
-    while(bytesGenerated < 240) {
+    while(bytesGenerated < expandedKeyLength) {
       for(int j = 0; j < 4; j++) {
         temp[j] = expandedKeys[j + bytesGenerated - 4];
       }
-      if(bytesGenerated % 16 == 0) {
+      if(bytesGenerated % 32 == 0) {
         temp = keyExpansionCore(temp, rconIteration);
         rconIteration++;
       }
+
+      if(bytesGenerated % 32 == 16) {
+        for (int i=0; i < 4; i++) {
+          temp[i] = sbox[temp[i]];
+        }
+      }
+
       for(int i = 0; i < 4; i++) {
-        expandedKeys[bytesGenerated] = expandedKeys[bytesGenerated - 16] ^ temp[i];
+        expandedKeys[bytesGenerated] = expandedKeys[bytesGenerated - 32] ^ temp[i];
         bytesGenerated++;
       }
     }
@@ -255,6 +263,7 @@ public class AES{
     System.out.println("inputfile: " + inputfile);
     System.out.println("");
     */
+    
     int key[] = new int[64];
     int block[] = new int[32];
     String buffer, hex;
@@ -272,15 +281,14 @@ public class AES{
     }
 
     System.out.println(Arrays.toString(key));
+    
 
     //for testing the individual methods
     int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b,
                         0x78, 0xa9, 0x7e, 0xff, 0x0b, 0xfc, 0x7e, 0xa2};
 
-    int[] testkey = {0x2b, 0x29, 0x84, 0x38, 0xae, 0xae, 0x95, 0x2c, 0xbc,
-                      0x81, 0xc1, 0x7f, 0x50, 0x7d, 0xc7, 0x29, 0x97, 0x82,
-                      0x7e, 0x32, 0x44, 0x6b, 0x65, 0x67, 0x7a, 0xf7, 0xb4,
-                      0x30, 0xfb, 0x4e, 0x2d, 0xae};
+    int[] testkey = {0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
+                    0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,};
 
     int[] roundkey = {0x2b, 0x29, 0x84, 0x38, 0xae, 0xae, 0x95, 0x2c,
                       0xbc, 0x81, 0xc1, 0x7f, 0x50, 0x7d, 0xc7, 0x29};
@@ -318,8 +326,8 @@ public class AES{
     }
 
     System.out.println("Calling keyExpansion");
-    int[] keys = keyExpansion(roundkey);
-    for(int i = 0; i < 176; i++) {
+    int[] keys = keyExpansion(testkey);
+    for(int i = 0; i < 240; i++) {
       System.out.println(keys[i] + " ");
     }
 

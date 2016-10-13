@@ -1,7 +1,5 @@
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
+import java.util.*;
+import java.io.*;
 
 
 public class AES{
@@ -188,30 +186,23 @@ public class AES{
 
   private static int[] keyExpansion(int[] inputKey) {
     //expand the inputkey into a whole bunch of keys, return the expandedKeys array
-    int expandedKeyLength = 240;
-    int[] expandedKeys = new int[expandedKeyLength];
-    int bytesGenerated = 32;
+    int[] expandedKeys = new int[240];
 
-    for(int i = 0; i < bytesGenerated; i++){
+    for(int i = 0; i < 16; i++){
       expandedKeys[i] = inputKey[i];
     }
 
-
+    int bytesGenerated = 16;
     int rconIteration = 1;
     int[] temp = new int[4];
 
-    while(bytesGenerated < expandedKeyLength) {
+    while(bytesGenerated < 240) {
       for(int j = 0; j < 4; j++) {
         temp[j] = expandedKeys[j + bytesGenerated - 4];
       }
-      if(bytesGenerated % 32 == 0) {
+      if(bytesGenerated % 16 == 0) {
         temp = keyExpansionCore(temp, rconIteration);
         rconIteration++;
-      }
-      if(bytesGenerated % 32 == 16) {
-        for (int i=0; i < 4; i++) {
-          temp[i] = sbox[temp[i]];
-        }
       }
       for(int i = 0; i < 4; i++) {
         expandedKeys[bytesGenerated] = expandedKeys[bytesGenerated - 16] ^ temp[i];
@@ -266,12 +257,18 @@ public class AES{
     */
     int key[] = new int[64];
     int block[] = new int[32];
+    String buffer, hex;
 
-    Scanner scanner = new Scanner(new File(args[1]));
+    Scanner scan = new Scanner(new BufferedReader(new FileReader(args[1])));
 
-    int i = 0;
-    while(scanner.hasNextInt()){
-      key[i++] = scanner.nextInt(16);
+    buffer = scan.next();
+    if (buffer.length() != 32){
+      System.out.println("invalid key length");
+    }
+
+    for(int i = 0; i<32; i += 2){
+      hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
+      key[i/2] = Integer.parseInt(hex, 16);
     }
 
     System.out.println(Arrays.toString(key));
@@ -289,34 +286,34 @@ public class AES{
                       0xbc, 0x81, 0xc1, 0x7f, 0x50, 0x7d, 0xc7, 0x29};
 
     System.out.println("Printing the testbyte array");
-    for(i = 0; i < 16; i++){
+    for(int i = 0; i < 16; i++){
       System.out.println(testbytes[i] + " ");
     }
     System.out.println("");
 
     System.out.println("Calling subBytes");
     int[] state = subBytes(testbytes);
-    for(i = 0; i < 16; i++){
+    for(int i = 0; i < 16; i++){
       System.out.println(state[i] + " ");
     }
     System.out.println("");
 
     System.out.println("Calling shiftRows");
     state = shiftRows(state);
-    for(i = 0; i < 16; i++){
+    for(int i = 0; i < 16; i++){
       System.out.println(state[i] + " ");
     }
     System.out.println("");
 
     System.out.println("Calling addRoundKey");
     state = addRoundKey(state, roundkey);
-    for(i = 0; i < 16; i++){
+    for(int i = 0; i < 16; i++){
       System.out.println(state[i] + " ");
     }
 
     System.out.println("Calling mixColumns");
     state = mixColumns(state);
-    for(i = 0; i < 16; i++){
+    for(int i = 0; i < 16; i++){
       System.out.println(state[i] + " ");
     }
 

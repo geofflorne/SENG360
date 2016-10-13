@@ -188,23 +188,30 @@ public class AES{
 
   private static int[] keyExpansion(int[] inputKey) {
     //expand the inputkey into a whole bunch of keys, return the expandedKeys array
-    int[] expandedKeys = new int[240];
+    int expandedKeyLength = 240;
+    int[] expandedKeys = new int[expandedKeyLength];
+    int bytesGenerated = 32;
 
-    for(int i = 0; i < 16; i++){
+    for(int i = 0; i < bytesGenerated; i++){
       expandedKeys[i] = inputKey[i];
     }
 
-    int bytesGenerated = 16;
+
     int rconIteration = 1;
     int[] temp = new int[4];
 
-    while(bytesGenerated < 240) {
+    while(bytesGenerated < expandedKeyLength) {
       for(int j = 0; j < 4; j++) {
         temp[j] = expandedKeys[j + bytesGenerated - 4];
       }
-      if(bytesGenerated % 16 == 0) {
+      if(bytesGenerated % 32 == 0) {
         temp = keyExpansionCore(temp, rconIteration);
         rconIteration++;
+      }
+      if(bytesGenerated % 32 == 16) {
+        for (int i=0; i < 4; i++) {
+          temp[i] = sbox[temp[i]];
+        }
       }
       for(int i = 0; i < 4; i++) {
         expandedKeys[bytesGenerated] = expandedKeys[bytesGenerated - 16] ^ temp[i];

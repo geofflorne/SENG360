@@ -212,6 +212,24 @@ public class AES{
     return expandedKeys;
   }
 
+  private static int[] readKey(String file) throws FileNotFoundException {
+    int key[] = new int[32];
+    String buffer, hex;
+
+    Scanner scan = new Scanner(new BufferedReader(new FileReader(file)));
+
+    buffer = scan.next();
+    if (buffer.length() != 32){
+      System.out.println("invalid key length");
+    }
+
+    for(int i = 0; i<64; i += 2){
+      hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
+      key[i/2] = Integer.parseInt(hex, 16);
+    }
+    return key;
+  }
+
   /*
   private static int[] encrypt(int[] key, int[] message){
 
@@ -236,7 +254,7 @@ public class AES{
   }
   */
 
-  public static void main(String[] args) throws FileNotFoundException {
+  public static void main(String[] args)throws FileNotFoundException  {
 
     /* uncomment this once using file i/o
     if (args.length < 3) {
@@ -255,23 +273,32 @@ public class AES{
     System.out.println("inputfile: " + inputfile);
     System.out.println("");
     */
-    int key[] = new int[64];
-    int block[] = new int[32];
+
+    //change args[1] to keyfile once you uncomment that stuff^
+    System.out.println(Arrays.toString(readKey(args[1])));
+
+    int bloc[] = new int[16];
     String buffer, hex;
+    //change args[2] to inputfile once you uncomment that stuff^
+    Scanner scan = new Scanner(new BufferedReader(new FileReader(args[2])));
 
-    Scanner scan = new Scanner(new BufferedReader(new FileReader(args[1])));
+    while (scan.hasNext()){
+      buffer = scan.next();
+      if (buffer.length() != 32){
+        System.out.println("invalid bloc length");
+      }
+      for(int i = 0; i<32; i += 2){
+        hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
+        bloc[i/2] = Integer.parseInt(hex, 16);
+      }
 
-    buffer = scan.next();
-    if (buffer.length() != 32){
-      System.out.println("invalid key length");
+      /*
+      encrypt block here
+      */
+      System.out.println(Arrays.toString(bloc));
     }
 
-    for(int i = 0; i<32; i += 2){
-      hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
-      key[i/2] = Integer.parseInt(hex, 16);
-    }
 
-    System.out.println(Arrays.toString(key));
 
     //for testing the individual methods
     int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b,

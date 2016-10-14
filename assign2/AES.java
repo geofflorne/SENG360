@@ -295,19 +295,31 @@ public class AES{
   private static int[] encrypt(int[] key, int[] message){
     int[] state = new int[16];
     int keysAt = 0;
-    for(int i = 0; i < 16; i++){
+    for (int i = 0; i < 16; i++) {
       state[i] = message[i];
     }
 
     int[] expandedKeys = keyExpansion(key);
+
     int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
     state = addRoundKey(state, currKeys);
+    String strState = "";
+    for (int item: state) {
+      strState += Integer.toHexString(item);
+    }
+    System.out.println("Round " +keysAt/16 + ": " + strState);
     keysAt += 16;
+
 
     for(int i  = 0; i < 14; i++){
       currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
-      keysAt += 16;
       state = addRoundKey(mixColumns(shiftRows(subBytes(state))), currKeys);
+      strState = "";
+      for (int item: state) {
+        strState += Integer.toHexString(item);
+      }
+      System.out.println("Round " +keysAt/16 + ": " + strState);
+      keysAt += 16;
     }
     currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
     return addRoundKey(shiftRows(subBytes(state)), currKeys);
@@ -394,43 +406,43 @@ public class AES{
     int[] roundkey = {0x2b, 0x29, 0x84, 0x38, 0xae, 0xae, 0x95, 0x2c,
                       0xbc, 0x81, 0xc1, 0x7f, 0x50, 0x7d, 0xc7, 0x29};
 
-    System.out.println("Printing the testbyte array");
-    for(int i = 0; i < 16; i++){
-      System.out.println(testbytes[i] + " ");
-    }
-    System.out.println("");
-
-    System.out.println("Calling subBytes");
-    int[] state = subBytes(testbytes);
-    for(int i = 0; i < 16; i++){
-      System.out.println(state[i] + " ");
-    }
-    System.out.println("");
-
-    System.out.println("Calling shiftRows");
-    state = shiftRows(state);
-    for(int i = 0; i < 16; i++){
-      System.out.println(state[i] + " ");
-    }
-    System.out.println("");
-
-    System.out.println("Calling addRoundKey");
-    state = addRoundKey(state, roundkey);
-    for(int i = 0; i < 16; i++){
-      System.out.println(state[i] + " ");
-    }
-
-    System.out.println("Calling mixColumns");
-    state = mixColumns(state);
-    for(int i = 0; i < 16; i++){
-      System.out.println(state[i] + " ");
-    }
-
-    System.out.println("Calling keyExpansion");
-    int[] keys = keyExpansion(testkey);
-    for(int i = 0; i < 240; i++) {
-      System.out.println(keys[i] + " ");
-    }
+//    System.out.println("Printing the testbyte array");
+//    for(int i = 0; i < 16; i++){
+//      System.out.println(testbytes[i] + " ");
+//    }
+//    System.out.println("");
+//
+//    System.out.println("Calling subBytes");
+//    int[] state = subBytes(testbytes);
+//    for(int i = 0; i < 16; i++){
+//      System.out.println(state[i] + " ");
+//    }
+//    System.out.println("");
+//
+//    System.out.println("Calling shiftRows");
+//    state = shiftRows(state);
+//    for(int i = 0; i < 16; i++){
+//      System.out.println(state[i] + " ");
+//    }
+//    System.out.println("");
+//
+//    System.out.println("Calling addRoundKey");
+//    state = addRoundKey(state, roundkey);
+//    for(int i = 0; i < 16; i++){
+//      System.out.println(state[i] + " ");
+//    }
+//
+//    System.out.println("Calling mixColumns");
+//    state = mixColumns(state);
+//    for(int i = 0; i < 16; i++){
+//      System.out.println(state[i] + " ");
+//    }
+//
+//    System.out.println("Calling keyExpansion");
+//    int[] keys = keyExpansion(testkey);
+//    for(int i = 0; i < 240; i++) {
+//      System.out.println(keys[i] + " ");
+//    }
 
   }
 }

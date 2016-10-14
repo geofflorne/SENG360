@@ -301,14 +301,14 @@ public class AES{
 
     int[] expandedKeys = keyExpansion(key);
     int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
-    state = addRoundKey(state, expandedKeys);
+    state = addRoundKey(state, currKeys);
 
     for(int i  = 0; i < 14; i++){
       currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
-      state = addRoundKey(mixColumns(shiftRows(subBytes(state))), expandedKeys);
+      state = addRoundKey(mixColumns(shiftRows(subBytes(state))), currKeys);
     }
     currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
-    return addRoundKey(shiftRows(subBytes(state)), expandedKeys);
+    return addRoundKey(shiftRows(subBytes(state)), currKeys);
   }
 
   public static void main(String[] args)throws Exception  {

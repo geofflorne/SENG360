@@ -294,18 +294,23 @@ public class AES{
 
   private static int[] encrypt(int[] key, int[] message){
     int[] state = new int[16];
+    int keysAt = 0;
     for(int i = 0; i < 16; i++){
       state[i] = message[i];
     }
 
     int[] expandedKeys = keyExpansion(key);
-    state = addRoundKey(state, expandedKeys);
+    int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
+    state = addRoundKey(state, currKeys);
+    keysAt += 16;
 
     for(int i  = 0; i < 14; i++){
-      state = addRoundKey(mixColumns(shiftRows(subBytes(state))), expandedKeys);
+      currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
+      keysAt += 16;
+      state = addRoundKey(mixColumns(shiftRows(subBytes(state))), currKeys);
     }
-
-    return addRoundKey(shiftRows(subBytes(state)), expandedKeys);
+    currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
+    return addRoundKey(shiftRows(subBytes(state)), currKeys);
   }
 
   public static void main(String[] args)throws Exception  {
@@ -344,7 +349,7 @@ public class AES{
     Scanner scan = new Scanner(new BufferedReader(new FileReader(inputfile)));
     BufferedWriter bw = new BufferedWriter(new FileWriter(outputfile));
 
-    while (scan.hasNext()){
+    while (scan.hasNext()) {
       buffer = scan.next();
       if (buffer.length() != 32){
         System.out.println("invalid bloc length" + buffer.length() + ", should be 32");

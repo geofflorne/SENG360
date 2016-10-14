@@ -238,29 +238,21 @@ public class AES{
     return key;
   }
 
-  /*
   private static int[] encrypt(int[] key, int[] message){
-
     int[] state = new int[16];
     for(int i = 0; i < 16; i++){
       state[i] = message[i];
     }
 
-    keyExpansion();
-    addRoundKey(state, key);
+    int[] expandedKeys = keyExpansion(key);
+    state = addRoundKey(state, expandedKeys);
 
     for(int i  = 0; i < 14; i++){
-      subBytes(state);
-      shiftRows(state, key);
-      mixColumns();
-      addRoundKey(state, key);
+      state = addRoundKey(mixColumns(shiftRows(subBytes(state))), expandedKeys);
     }
 
-    subBytes(state);
-    shiftRows(state);
-    addRoundKey(state);
+    return addRoundKey(shiftRows(subBytes(state)), expandedKeys);
   }
-  */
 
   public static void main(String[] args)throws FileNotFoundException  {
 
@@ -280,7 +272,7 @@ public class AES{
     System.out.println("inputfile: " + inputfile);
     System.out.println("");
 
-    System.out.println(Arrays.toString(readKey(keyfile)));
+    int key[] = readKey(keyfile);
 
     int bloc[] = new int[16];
     String buffer, hex;
@@ -296,15 +288,15 @@ public class AES{
         bloc[i/2] = Integer.parseInt(hex, 16);
       }
 
-      /*
-      encrypt block here
-      */
-      System.out.println(Arrays.toString(bloc));
+      encrypt(key, bloc);
+      //System.out.println(Arrays.toString(bloc));
     }
 
     //for testing the individual methods
     int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b,
                         0x78, 0xa9, 0x7e, 0xff, 0x0b, 0xfc, 0x7e, 0xa2};
+
+
 
     int[] testkey = {0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
                     0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,};

@@ -305,7 +305,7 @@ public class AES{
     state = addRoundKey(state, currKeys);
     String strState = "";
     for (int item: state) {
-      strState += Integer.toHexString(item);
+      strState +=  String.format("%02X",item);;
     }
     System.out.println("Round " +keysAt/16 + ": " + strState);
     keysAt += 16;
@@ -316,7 +316,7 @@ public class AES{
       state = addRoundKey(mixColumns(shiftRows(subBytes(state))), currKeys);
       strState = "";
       for (int item: state) {
-        strState += Integer.toHexString(item);
+        strState +=  String.format("%02X",item);
       }
       System.out.println("Round " +keysAt/16 + ": " + strState);
       keysAt += 16;
@@ -372,6 +372,18 @@ public class AES{
         bloc[i/2] = Integer.parseInt(hex, 16);
       }
       if(encode){
+        int[] state = encrypt(key,bloc);
+        String strState = "";
+        for (int item: state) {
+          //strState += Integer.toHexString(item);
+          strState += String.format("%02X",item);
+        }
+        bw.write(strState);
+        bw.write("\n");
+        System.out.println("START STATE");
+        System.out.println(Arrays.toString(bloc));
+        System.out.println("END STATE");
+        System.out.println(strState);
         /*
         encrypt block here
         bw.write(data);
@@ -382,16 +394,6 @@ public class AES{
         bw.write(data);
         */
       }
-      int[] state = encrypt(key, bloc);
-      String strState = "";
-      for (int item: state) {
-        strState += Integer.toHexString(item);
-      }
-      System.out.println("START STATE");
-      System.out.println(strState);
-      System.out.println("END STATE");
-      bw.write(Arrays.toString(bloc));
-      System.out.println(Arrays.toString(bloc));
     }
     bw.close();
     //for testing the individual methods

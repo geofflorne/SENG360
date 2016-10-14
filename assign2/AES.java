@@ -227,11 +227,11 @@ public class AES{
     Scanner scan = new Scanner(new BufferedReader(new FileReader(file)));
 
     buffer = scan.next();
-    if (buffer.length() != 32){
+    if (buffer.length() != 64){
       System.out.println("invalid key length");
     }
 
-    for(int i = 0; i<64; i += 2){
+    for(int i = 0; i<buffer.length(); i += 2){
       hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
       key[i/2] = Integer.parseInt(hex, 16);
     }
@@ -291,7 +291,7 @@ public class AES{
       if (buffer.length() != 32){
         System.out.println("invalid bloc length");
       }
-      for(int i = 0; i<32; i += 2){
+      for(int i = 0; i<buffer.length(); i += 2){
         hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
         bloc[i/2] = Integer.parseInt(hex, 16);
       }

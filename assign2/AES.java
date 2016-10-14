@@ -297,7 +297,7 @@ public class AES{
     int bloc[] = new int[16];
     String buffer, hex;
     Scanner scan = new Scanner(new BufferedReader(new FileReader(inputfile)));
-    BufferedWriter bw = new BufferedWriter(new FileWriter(inputfile + ".enc"));
+    BufferedWriter bw = new BufferedWriter(new FileWriter(outputfile));
 
     while (scan.hasNext()){
       buffer = scan.next();

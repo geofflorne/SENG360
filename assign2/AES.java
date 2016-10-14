@@ -228,7 +228,8 @@ public class AES{
 
     buffer = scan.next();
     if (buffer.length() != 64){
-      System.out.println("invalid key length");
+      System.out.println("invalid key length" + buffer.length() + " should be 64");
+      System.exit(0);
     }
 
     for(int i = 0; i<buffer.length(); i += 2){
@@ -254,17 +255,28 @@ public class AES{
     return addRoundKey(shiftRows(subBytes(state)), expandedKeys);
   }
 
-  public static void main(String[] args)throws FileNotFoundException  {
+  public static void main(String[] args)throws Exception  {
 
     if (args.length < 3) {
       System.out.println("Incorrect number of arguements supplied!");
       System.exit(0);
     }
 
-    String option, keyfile, inputfile;
+    String option, keyfile, inputfile, outputfile;
+    Boolean encode;
     option = args[0];
     keyfile = args[1];
     inputfile = args[2];
+
+    if(option.equals("e")){
+      outputfile = inputfile + "enc";
+      encode = true;
+    }else if(option.equals("d")){
+      outputfile = inputfile + "dec";
+    }else{
+      System.out.println("invalid option: " + option + ", should be 'e' or 'd'");
+      System.exit(0);
+    }
 
     System.out.println("Running AES with the following parameters:");
     System.out.println("option: " + option);
@@ -277,21 +289,34 @@ public class AES{
     int bloc[] = new int[16];
     String buffer, hex;
     Scanner scan = new Scanner(new BufferedReader(new FileReader(inputfile)));
+    BufferedWriter bw = new BufferedWriter(new FileWriter(outputfile));
 
     while (scan.hasNext()){
       buffer = scan.next();
       if (buffer.length() != 32){
-        System.out.println("invalid bloc length");
+        System.out.println("invalid bloc length" + buffer.length() + ", should be 32");
+        System.exit(0);
       }
       for(int i = 0; i<buffer.length(); i += 2){
         hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
         bloc[i/2] = Integer.parseInt(hex, 16);
       }
-
+      if(encode){
+        /*
+        encrypt block here
+        bw.write(data);
+        */
+      }else{
+        /*
+        decrypt block here
+        bw.write(data);
+        */
+      }
       encrypt(key, bloc);
-      //System.out.println(Arrays.toString(bloc));
+      bw.write(Arrays.toString(bloc));
+      System.out.println(Arrays.toString(bloc));
     }
-
+    bw.close();
     //for testing the individual methods
     int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b,
                         0x78, 0xa9, 0x7e, 0xff, 0x0b, 0xfc, 0x7e, 0xa2};

@@ -302,9 +302,11 @@ public class AES{
     int[] expandedKeys = keyExpansion(key);
     int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
     state = addRoundKey(state, currKeys);
+    keysAt += 16;
 
     for(int i  = 0; i < 14; i++){
       currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
+      keysAt += 16;
       state = addRoundKey(mixColumns(shiftRows(subBytes(state))), currKeys);
     }
     currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);

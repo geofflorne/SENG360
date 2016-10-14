@@ -264,7 +264,6 @@ public class AES{
 
   public static void main(String[] args)throws FileNotFoundException  {
 
-    /* uncomment this once using file i/o
     if (args.length < 3) {
       System.out.println("Incorrect number of arguements supplied!");
       System.exit(0);
@@ -280,15 +279,12 @@ public class AES{
     System.out.println("keyfile: " + keyfile);
     System.out.println("inputfile: " + inputfile);
     System.out.println("");
-    */
 
-    //change args[1] to keyfile once you uncomment that stuff^
-    System.out.println(Arrays.toString(readKey(args[1])));
+    System.out.println(Arrays.toString(readKey(keyfile)));
 
     int bloc[] = new int[16];
     String buffer, hex;
-    //change args[2] to inputfile once you uncomment that stuff^
-    Scanner scan = new Scanner(new BufferedReader(new FileReader(args[2])));
+    Scanner scan = new Scanner(new BufferedReader(new FileReader(inputfile)));
 
     while (scan.hasNext()){
       buffer = scan.next();

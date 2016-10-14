@@ -262,8 +262,8 @@ public class AES{
       System.exit(0);
     }
 
-    String option, keyfile, inputfile, outputfile;
-    Boolean encode;
+    String option, keyfile, inputfile, outputfile = null;
+    boolean encode = false;
     option = args[0];
     keyfile = args[1];
     inputfile = args[2];

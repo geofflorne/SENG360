@@ -311,7 +311,7 @@ public class AES{
     keysAt += 16;
 
 
-    for(int i  = 0; i < 14; i++){
+    for(int i  = 0; i < 13; i++){
       currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
       state = addRoundKey(mixColumns(shiftRows(subBytes(state))), currKeys);
       strState = "";

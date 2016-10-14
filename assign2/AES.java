@@ -229,6 +229,7 @@ public class AES{
     buffer = scan.next();
     if (buffer.length() != 64){
       System.out.println("invalid key length" + buffer.length() + " should be 64");
+      System.exit(0);
     }
 
     for(int i = 0; i<buffer.length(); i += 2){
@@ -282,6 +283,7 @@ public class AES{
       outputfile = inputfile + "dec";
     }else{
       System.out.println("invalid option: " + option + ", should be 'e' or 'd'");
+      System.exit(0);
     }
 
     System.out.println("Running AES with the following parameters:");
@@ -301,6 +303,7 @@ public class AES{
       buffer = scan.next();
       if (buffer.length() != 32){
         System.out.println("invalid bloc length" + buffer.length() + ", should be 32");
+        System.exit(0);
       }
       for(int i = 0; i<buffer.length(); i += 2){
         hex = "" + buffer.charAt(i) + buffer.charAt(i+1);

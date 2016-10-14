@@ -294,17 +294,20 @@ public class AES{
 
   private static int[] encrypt(int[] key, int[] message){
     int[] state = new int[16];
+    int keysAt = 0;
     for(int i = 0; i < 16; i++){
       state[i] = message[i];
     }
 
     int[] expandedKeys = keyExpansion(key);
+    int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
     state = addRoundKey(state, expandedKeys);
 
     for(int i  = 0; i < 14; i++){
+      currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
       state = addRoundKey(mixColumns(shiftRows(subBytes(state))), expandedKeys);
     }
-
+    currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
     return addRoundKey(shiftRows(subBytes(state)), expandedKeys);
   }
 
@@ -344,7 +347,7 @@ public class AES{
     Scanner scan = new Scanner(new BufferedReader(new FileReader(inputfile)));
     BufferedWriter bw = new BufferedWriter(new FileWriter(outputfile));
 
-    while (scan.hasNext()){
+    while (scan.hasNext()) {
       buffer = scan.next();
       if (buffer.length() != 32){
         System.out.println("invalid bloc length" + buffer.length() + ", should be 32");

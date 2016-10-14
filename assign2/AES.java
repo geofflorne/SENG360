@@ -313,8 +313,12 @@ public class AES{
         */
       }
       int[] state = encrypt(key, bloc);
+      String strState = "";
+      for (int item: state) {
+        strState += Integer.toHexString(item);
+      }
       System.out.println("START STATE");
-      System.out.println(Arrays.toString(state));
+      System.out.println(strState);
       System.out.println("END STATE");
       bw.write(Arrays.toString(bloc));
       System.out.println(Arrays.toString(bloc));

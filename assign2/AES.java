@@ -454,6 +454,14 @@ public class AES{
     return state;
   }
 
+  private static String constructString(int[] state) {
+    String strState = "";
+    for (int item: state) {
+      strState += String.format("%02X", item);
+    }
+    return strState;
+  }
+
   public static void main(String[] args)throws Exception  {
 
     if (args.length < 3) {
@@ -500,33 +508,14 @@ public class AES{
         hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
         bloc[i/2] = Integer.parseInt(hex, 16);
       }
+      int[] state;
       if (encode) {
-        int[] state = encrypt(key,bloc);
-        String strState = "";
-        for (int item: state) {
-          //strState += Integer.toHexString(item);
-          strState += String.format("%02X",item);
-        }
-        bw.write(strState);
-        bw.write("\n");
-        /*
-        encrypt block here
-        bw.write(data);
-        */
+        state = encrypt(key,bloc);
       } else {
-        int[] state = decrypt(key, bloc);
-        String strState = "";
-        for (int item: state) {
-          strState += String.format("%02X", item);
-        }
-        bw.write(strState);
-        bw.write("\n");
-        /*
-        decrypt block here
-        bw.write(data);
-        */
+        state = decrypt(key, bloc);
       }
-
+      bw.write(constructString(state));
+      bw.write("\n");
     }
     bw.close();
     if (encode) {

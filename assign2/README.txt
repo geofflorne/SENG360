@@ -1,6 +1,7 @@
 SENG360 Assignment 2
 Geoffrey Lorne
 Tanner Zinck
+Jake Cooper
 
 An AES implementation in java oh boy.
 

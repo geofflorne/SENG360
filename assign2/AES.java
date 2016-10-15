@@ -379,14 +379,6 @@ public class AES{
     return expandedKeys;
   }
 
-  private static void printRound(int[] state, int round) {
-    String strState = "";
-    for (int item: state) {
-      strState +=  String.format("%02X",item);
-    }
-    System.out.println("Round " + round + ": " + strState);
-  }
-
   private static int[] readKey(String file) throws FileNotFoundException {
     int key[] = new int[32];
     String buffer, hex;
@@ -416,6 +408,7 @@ public class AES{
     int[] expandedKeys = keyExpansion(key);
 
     int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
+    state = addRoundKey(state, currKeys);
     keysAt += 16;
 
 
@@ -500,28 +493,34 @@ public class AES{
 
     while (scan.hasNext()) {
       buffer = scan.next();
-      if (buffer.length() != 32) {
+      if (buffer.length() != 32){
         System.out.println("invalid bloc length" + buffer.length() + ", should be 32");
         System.exit(0);
       }
-      for (int i = 0; i<buffer.length(); i += 2) {
+
+      for(int i = 0; i<buffer.length(); i += 2){
         hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
         bloc[i/2] = Integer.parseInt(hex, 16);
       }
+
       int[] state;
-      if (encode) {
+
+      if(encode){
         state = encrypt(key,bloc);
-      } else {
+      }else{
         state = decrypt(key, bloc);
       }
+
       bw.write(constructString(state));
       bw.write("\n");
     }
-    bw.close();
+
     if (encode) {
-      System.out.println("Successfully saved the the encrypted content to " + inputfile + ".enc");
+      System.out.println("Successfully printed encrypted data to " + keyfile + ".enc");
     } else {
-      System.out.println("Successfully saved the the decrypted content to " + inputfile + ".dec");
+      System.out.println("Successfully printed decrypted data to " + keyfile + ".enc");
     }
+
+    bw.close();
   }
 }

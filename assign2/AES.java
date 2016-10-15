@@ -435,6 +435,10 @@ public class AES{
     int[] state = new int[16];
     int keysAt = 224;
 
+    for (int i = 0; i < 16; i++) {
+      state[i] = message[i];
+    }
+
     int[] expandedKeys = keyExpansion(key);
 
     int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);

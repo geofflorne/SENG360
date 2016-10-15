@@ -433,6 +433,28 @@ public class AES{
 
   private static int[] decrypt(int[] key, int[] message) {
     int[] state = new int[16];
+    int keysAt = 224;
+
+    int[] expandedKeys = keyExpansion(key);
+
+    int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
+    keysAt -= 16;
+
+    state = addRoundKey(state, currKeys);
+    state = inv_shiftRows(state);
+    state = inv_subBytes(state);
+
+    for(int i = 0; i < 13; i++){
+      currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
+      state = addRoundKey(state, currKeys);
+      state = inv_mixColumns(state);
+      state = inv_shiftRows(state);
+      state = inv_subBytes(state);
+      keysAt -= 16;
+    }
+    currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
+    state = addRoundKey(state, currKeys);
+
     return state;
   }
 

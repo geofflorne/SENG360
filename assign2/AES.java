@@ -416,15 +416,12 @@ public class AES{
     int[] expandedKeys = keyExpansion(key);
 
     int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
-    state = addRoundKey(state, currKeys);
-    printRound(state, keysAt/16);
     keysAt += 16;
 
 
     for(int i  = 0; i < 13; i++){
       currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
       state = addRoundKey(mixColumns(shiftRows(subBytes(state))), currKeys);
-      printRound(state, keysAt/16);
       keysAt += 16;
     }
     currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
@@ -444,16 +441,11 @@ public class AES{
     int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
     keysAt -= 16;
 
-    state = addRoundKey(state, currKeys);
-    state = inv_shiftRows(state);
-    state = inv_subBytes(state);
+    state = inv_subBytes(inv_shiftRows(addRoundKey(state, currKeys)));
 
     for(int i = 0; i < 13; i++){
       currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
-      state = addRoundKey(state, currKeys);
-      state = inv_mixColumns(state);
-      state = inv_shiftRows(state);
-      state = inv_subBytes(state);
+      state = inv_subBytes(inv_shiftRows(inv_mixColumns(addRoundKey(state, currKeys))));
       keysAt -= 16;
     }
     currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
@@ -475,12 +467,12 @@ public class AES{
     keyfile = args[1];
     inputfile = args[2];
 
-    if(option.equals("e")){
+    if (option.equals("e")) {
       outputfile = inputfile + ".enc";
       encode = true;
-    }else if(option.equals("d")){
+    } else if(option.equals("d")) {
       outputfile = inputfile + ".dec";
-    }else{
+    } else {
       System.out.println("invalid option: " + option + ", should be 'e' or 'd'");
       System.exit(0);
     }
@@ -500,15 +492,15 @@ public class AES{
 
     while (scan.hasNext()) {
       buffer = scan.next();
-      if (buffer.length() != 32){
+      if (buffer.length() != 32) {
         System.out.println("invalid bloc length" + buffer.length() + ", should be 32");
         System.exit(0);
       }
-      for(int i = 0; i<buffer.length(); i += 2){
+      for (int i = 0; i<buffer.length(); i += 2) {
         hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
         bloc[i/2] = Integer.parseInt(hex, 16);
       }
-      if(encode){
+      if (encode) {
         int[] state = encrypt(key,bloc);
         String strState = "";
         for (int item: state) {
@@ -517,14 +509,11 @@ public class AES{
         }
         bw.write(strState);
         bw.write("\n");
-        System.out.println("START STATE");
-        System.out.println("END STATE");
-        System.out.println(strState);
         /*
         encrypt block here
         bw.write(data);
         */
-      }else{
+      } else {
         decrypt(key, bloc);
         /*
         decrypt block here
@@ -534,6 +523,11 @@ public class AES{
 
     }
     bw.close();
+    if (encode) {
+      System.out.println("Successfully saved the the encrypted content to " + inputfile + ".enc");
+    } else {
+      System.out.println("Successfully saved the the decrypted content to " + inputfile + ".dec");
+    }
     //for testing the individual methods
     int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b,
                         0x78, 0xa9, 0x7e, 0xff, 0x0b, 0xfc, 0x7e, 0xa2};

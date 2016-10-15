@@ -481,12 +481,12 @@ public class AES{
     keyfile = args[1];
     inputfile = args[2];
 
-    if(option.equals("e")){
+    if (option.equals("e")) {
       outputfile = inputfile + ".enc";
       encode = true;
-    }else if(option.equals("d")){
+    } else if(option.equals("d")) {
       outputfile = inputfile + ".dec";
-    }else{
+    } else {
       System.out.println("invalid option: " + option + ", should be 'e' or 'd'");
       System.exit(0);
     }
@@ -506,28 +506,35 @@ public class AES{
 
     while (scan.hasNext()) {
       buffer = scan.next();
+
       if (buffer.length() != 32){
         System.out.println("invalid bloc length" + buffer.length() + ", should be 32");
         System.exit(0);
       }
+
       for(int i = 0; i<buffer.length(); i += 2){
         hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
         bloc[i/2] = Integer.parseInt(hex, 16);
       }
+
       int[] state;
+
       if(encode){
         state = encrypt(key,bloc);
       }else{
         state = decrypt(key, bloc);
       }
+
       bw.write(constructString(state));
       bw.write("\n");
     }
+
     if (encode) {
       System.out.println("Successfully printed encrypted data to " + keyfile + ".enc");
     } else {
       System.out.println("Successfully printed decrypted data to " + keyfile + ".enc");
     }
+
     bw.close();
   }
 }

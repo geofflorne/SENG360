@@ -387,7 +387,7 @@ public class AES{
 
     buffer = scan.next();
     if (buffer.length() != 64){
-      System.out.println("invalid key length" + buffer.length() + " should be 64");
+      System.out.println("invalid key length: " + buffer.length() + ", should be 64");
       System.exit(0);
     }
 
@@ -494,7 +494,7 @@ public class AES{
     while (scan.hasNext()) {
       buffer = scan.next();
       if (buffer.length() != 32){
-        System.out.println("invalid bloc length" + buffer.length() + ", should be 32");
+        System.out.println("invalid bloc length: " + buffer.length() + ", should be 32");
         System.exit(0);
       }
 
@@ -518,7 +518,7 @@ public class AES{
     if (encode) {
       System.out.println("Successfully printed encrypted data to " + keyfile + ".enc");
     } else {
-      System.out.println("Successfully printed decrypted data to " + keyfile + ".enc");
+      System.out.println("Successfully printed decrypted data to " + keyfile + ".dec");
     }
 
     bw.close();

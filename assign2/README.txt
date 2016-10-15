@@ -3,7 +3,7 @@ Geoffrey Lorne
 Tanner Zinck
 Jake Cooper
 
-An AES implementation in java oh boy.
+An AES implementation in java.
 
 Compile:
 javac *.java

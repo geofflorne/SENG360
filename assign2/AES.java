@@ -525,7 +525,16 @@ public class AES{
         bw.write(data);
         */
       }else{
-        decrypt(key, bloc);
+        int[] state = decrypt(key, bloc);
+        String strState = "";
+        for (int item: state) {
+          strState += String.format("%02X", item);
+        }
+        bw.write(strState);
+        bw.write("\n");
+        System.out.println("START STATE");
+        System.out.println("END STATE");
+        System.out.println(strState);
         /*
         decrypt block here
         bw.write(data);

@@ -417,14 +417,12 @@ public class AES{
 
     int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
     state = addRoundKey(state, currKeys);
-    printRound(state, keysAt/16);
     keysAt += 16;
 
 
     for(int i  = 0; i < 13; i++){
       currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
       state = addRoundKey(mixColumns(shiftRows(subBytes(state))), currKeys);
-      printRound(state, keysAt/16);
       keysAt += 16;
     }
     currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
@@ -460,6 +458,14 @@ public class AES{
     state = addRoundKey(state, currKeys);
 
     return state;
+  }
+
+  private static String constructString(int[] state) {
+    String strState = "";
+    for (int item: state) {
+      strState += String.format("%02X", item);
+    }
+    return strState;
   }
 
   public static void main(String[] args)throws Exception  {
@@ -508,39 +514,19 @@ public class AES{
         hex = "" + buffer.charAt(i) + buffer.charAt(i+1);
         bloc[i/2] = Integer.parseInt(hex, 16);
       }
+      int[] state;
       if(encode){
-        int[] state = encrypt(key,bloc);
-        String strState = "";
-        for (int item: state) {
-          //strState += Integer.toHexString(item);
-          strState += String.format("%02X",item);
-        }
-        bw.write(strState);
-        bw.write("\n");
-        System.out.println("START STATE");
-        System.out.println("END STATE");
-        System.out.println(strState);
-        /*
-        encrypt block here
-        bw.write(data);
-        */
+        state = encrypt(key,bloc);
       }else{
-        int[] state = decrypt(key, bloc);
-        String strState = "";
-        for (int item: state) {
-          strState += String.format("%02X", item);
-        }
-        bw.write(strState);
-        bw.write("\n");
-        System.out.println("START STATE");
-        System.out.println("END STATE");
-        System.out.println(strState);
-        /*
-        decrypt block here
-        bw.write(data);
-        */
+        state = decrypt(key, bloc);
       }
-
+      bw.write(constructString(state));
+      bw.write("\n");
+    }
+    if (encode) {
+      System.out.println("Successfully printed encrypted data to " + keyfile + ".enc");
+    } else {
+      System.out.println("Successfully printed decrypted data to " + keyfile + ".enc");
     }
     bw.close();
   }

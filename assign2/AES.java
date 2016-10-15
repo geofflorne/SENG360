@@ -543,55 +543,5 @@ public class AES{
 
     }
     bw.close();
-    //for testing the individual methods
-    int[] testbytes = {0x7c, 0xba, 0x04, 0x82, 0xc9, 0xc7, 0x9b, 0x1b,
-                        0x78, 0xa9, 0x7e, 0xff, 0x0b, 0xfc, 0x7e, 0xa2};
-
-
-
-    int[] testkey = {0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
-                    0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,};
-
-    int[] roundkey = {0x2b, 0x29, 0x84, 0x38, 0xae, 0xae, 0x95, 0x2c,
-                      0xbc, 0x81, 0xc1, 0x7f, 0x50, 0x7d, 0xc7, 0x29};
-
-//    System.out.println("Printing the testbyte array");
-//    for(int i = 0; i < 16; i++){
-//      System.out.println(testbytes[i] + " ");
-//    }
-//    System.out.println("");
-//
-//    System.out.println("Calling subBytes");
-//    int[] state = subBytes(testbytes);
-//    for(int i = 0; i < 16; i++){
-//      System.out.println(state[i] + " ");
-//    }
-//    System.out.println("");
-//
-//    System.out.println("Calling shiftRows");
-//    state = shiftRows(state);
-//    for(int i = 0; i < 16; i++){
-//      System.out.println(state[i] + " ");
-//    }
-//    System.out.println("");
-//
-//    System.out.println("Calling addRoundKey");
-//    state = addRoundKey(state, roundkey);
-//    for(int i = 0; i < 16; i++){
-//      System.out.println(state[i] + " ");
-//    }
-//
-//    System.out.println("Calling mixColumns");
-//    state = mixColumns(state);
-//    for(int i = 0; i < 16; i++){
-//      System.out.println(state[i] + " ");
-//    }
-//
-//    System.out.println("Calling keyExpansion");
-//    int[] keys = keyExpansion(testkey);
-//    for(int i = 0; i < 240; i++) {
-//      System.out.println(keys[i] + " ");
-//    }
-
   }
 }

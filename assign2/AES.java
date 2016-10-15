@@ -431,6 +431,11 @@ public class AES{
     return addRoundKey(shiftRows(subBytes(state)), currKeys);
   }
 
+  private static int[] decrypt(int[] key, int[] message) {
+    int[] state = new int[16];
+    return state;
+  }
+
   public static void main(String[] args)throws Exception  {
 
     if (args.length < 3) {
@@ -494,6 +499,7 @@ public class AES{
         bw.write(data);
         */
       }else{
+        decrypt(key, bloc);
         /*
         decrypt block here
         bw.write(data);

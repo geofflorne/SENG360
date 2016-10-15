@@ -379,6 +379,14 @@ public class AES{
     return expandedKeys;
   }
 
+  private static void printRound(int[] state, int round) {
+    String strState = "";
+    for (int item: state) {
+      strState +=  String.format("%02X",item);
+    }
+    System.out.println("Round " + round + ": " + strState);
+  }
+
   private static int[] readKey(String file) throws FileNotFoundException {
     int key[] = new int[32];
     String buffer, hex;
@@ -409,22 +417,14 @@ public class AES{
 
     int[] currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
     state = addRoundKey(state, currKeys);
-    String strState = "";
-    for (int item: state) {
-      strState +=  String.format("%02X",item);;
-    }
-    System.out.println("Round " +keysAt/16 + ": " + strState);
+    printRound(state, keysAt/16);
     keysAt += 16;
 
 
     for(int i  = 0; i < 13; i++){
       currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
       state = addRoundKey(mixColumns(shiftRows(subBytes(state))), currKeys);
-      strState = "";
-      for (int item: state) {
-        strState +=  String.format("%02X",item);
-      }
-      System.out.println("Round " +keysAt/16 + ": " + strState);
+      printRound(state, keysAt/16);
       keysAt += 16;
     }
     currKeys = Arrays.copyOfRange(expandedKeys, keysAt, keysAt + 16);
@@ -487,7 +487,6 @@ public class AES{
         bw.write(strState);
         bw.write("\n");
         System.out.println("START STATE");
-        System.out.println(Arrays.toString(bloc));
         System.out.println("END STATE");
         System.out.println(strState);
         /*
@@ -500,6 +499,7 @@ public class AES{
         bw.write(data);
         */
       }
+
     }
     bw.close();
     //for testing the individual methods
